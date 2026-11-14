@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Enigma Super Misterioso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef0f6;--ink:#1c2347;--muted:#586084;--gold:#9a6a14;--card:#fbfcff;--line:#cbd1e4;--ok:#2f6b4f;--bad:#a23a3a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12162b;--ink:#e8eaf6;--muted:#9aa2c8;--gold:#e0b04c;--card:#1a1f3d;--line:#2d3560;--ok:#7fcfa4;--bad:#f09a9a}}
+:root[data-theme="dark"]{--bg:#12162b;--ink:#e8eaf6;--muted:#9aa2c8;--gold:#e0b04c;--card:#1a1f3d;--line:#2d3560;--ok:#7fcfa4;--bad:#f09a9a}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Fraunces",Georgia,"Times New Roman",serif;font-size:1.0625rem;line-height:1.65}
+main{max-width:40rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+h1{font-size:clamp(2.4rem,9vw,3.6rem);line-height:1.05;font-weight:600;margin:0 0 1rem;letter-spacing:-.01em}
+h2{font-size:1.35rem;font-weight:600;margin:3rem 0 .5rem}
+p{margin:0 0 1rem;max-width:34rem}
+.lead{color:var(--muted);font-size:1.15rem}
+.cipher{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-size:.84rem;line-height:1.7;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);padding:1.1rem 1.1rem 1.1rem 1.2rem;border-radius:4px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;margin:1rem 0}
+.cipher p{margin:0 0 .9rem;max-width:none}.cipher p:last-child{margin:0}
+.wheel{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin:1rem 0 .5rem}
+.wheel label{color:var(--muted)}
+input[type=number]{width:4.5rem;font:inherit;font-size:1.1rem;padding:.4rem .5rem;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:4px}
+input:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1rem 1.1rem;margin:0 0 .9rem}
+.card h3{font-size:1.05rem;margin:0 0 .6rem;display:flex;align-items:center;gap:.55rem;font-weight:600}
+.lock{width:1.15rem;height:1.15rem;flex:none;color:var(--gold)}
+.row{display:flex;gap:.6rem;flex-wrap:wrap}
+.row input[type=text]{flex:1 1 12rem;min-width:0;font:inherit;padding:.55rem .7rem;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px}
+button{font:inherit;font-weight:600;padding:.55rem 1.1rem;background:var(--ink);color:var(--bg);border:0;border-radius:4px;cursor:pointer}
+.msg{min-height:1.4em;margin:.5rem 0 0;font-size:.95rem;color:var(--bad)}
+.verse{margin:.2rem 0 0;font-style:italic;font-size:1.12rem;line-height:1.6}
+.ref{display:block;margin-top:.5rem;font-style:normal;color:var(--gold);font-size:.95rem}
+.card.done{border-color:var(--gold)}
+.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.hint{margin:1.5rem 0 0;padding:1rem 1.1rem;border:1px dashed var(--gold);border-radius:4px;max-width:34rem}.hint b{display:block;margin-bottom:.3rem;color:var(--gold)}
+#final{display:none;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--line)}
+#final.on{display:block}
+#final blockquote{margin:0 0 1.4rem;padding-left:1rem;border-left:3px solid var(--gold)}
+#final blockquote span{display:block;color:var(--gold);font-size:.9rem;font-style:normal}
+#final .end{font-size:1.5rem;font-weight:600;line-height:1.3}
+.auth{max-width:26rem;margin:0 auto;padding:3rem 1.25rem 4rem}
+.auth h1{font-size:clamp(2rem,8vw,2.8rem)}
+.tabs{display:flex;gap:.5rem;margin:1.2rem 0}
+.tabs button{flex:1;background:transparent;color:var(--ink);border:1px solid var(--line)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.field{display:block;margin:0 0 .9rem}
+.field span{display:block;color:var(--muted);font-size:.95rem;margin-bottom:.3rem}
+.field input{width:100%;font:inherit;padding:.6rem .7rem;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:4px}
+.auth .go{width:100%}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin:0 0 1.5rem;color:var(--muted);font-size:.95rem}
+.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);padding:.35rem .8rem}
+.admintbl{width:100%;border-collapse:collapse;font-size:.9rem;margin:0 0 1.5rem}
+.admintbl th,.admintbl td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--line);word-break:break-word}
+.admintbl th{color:var(--muted);font-weight:600}
+#adminpanel{overflow-x:auto}
+.note{color:var(--muted);font-size:.9rem;margin-top:.8rem}
+#last{display:none}
+#last.on{display:block}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}}
+</style>
+</head>
+<body>
+<section class="auth" id="auth">
+<h1>Quem é você?</h1>
+<p class="lead">Entre com seu usuário e senha, ou crie uma conta rápida para continuar.</p>
+<div class="tabs" role="tablist">
+<button type="button" role="tab" id="tl" aria-selected="true">Entrar</button>
+<button type="button" role="tab" id="tr" aria-selected="false">Cadastrar</button>
+</div>
+<label class="field"><span>Nome de usuário</span><input type="text" id="au" autocomplete="username" autocapitalize="none" spellcheck="false"></label>
+<label class="field"><span>Senha</span><input type="password" id="ap" autocomplete="current-password"></label>
+<button type="button" class="go" id="ago">Entrar</button>
+<p class="msg" id="am" role="status"></p>
+</section>
+<main id="app" hidden>
+<div class="bar"><span id="who"></span><span><button type="button" class="ghost" id="chgbtn" hidden>Mudar senha</button> <button type="button" class="ghost" id="adminbtn" hidden>Ver cadastros</button> <button type="button" class="ghost" id="logout">Sair</button></span></div>
+<div id="adminpanel" hidden></div>
+<div id="pwpanel" class="card" hidden><h3>Mudar senha do admin</h3><label class="field"><span>Nova senha</span><input type="password" id="np" autocomplete="new-password"></label><label class="field"><span>Repita a nova senha</span><input type="password" id="np2" autocomplete="new-password"></label><button type="button" id="npgo">Salvar nova senha</button><p class="msg" id="npm" role="status"></p></div>
+<h1>Isto está escondido.</h1>
+<p class="lead">Eu te desafio a desvendar este enigma super secreto👀</p>
+
+<div class="cipher" id="cipher" aria-label="Texto cifrado"></div>
+
+<p class="hint"><b>Uma dica pro primeiro passo</b>Descubra quem é considerado o melhor MC das batalhas de rima, conhecido pela sua famosa rima: “Cachorro que late muito acaba na carrocinha”, e descubra a criptografia usada nos textos acima.</p>
+
+<h2>Suas respostas</h2>
+<p>Para cada pista, escreva onde fica o versículo: livro, capítulo e versículo.</p>
+<div id="cards"></div>
+
+<section id="last">
+<p class="hint"><b>Não saia da página!</b>Ainda existe mais um último enigma. Responda à pergunta abaixo para chegar até o fim.</p>
+<h2>Uma última pergunta</h2>
+<div class="card" id="fq"></div>
+</section>
+
+<section id="final">
+<h2 style="margin-top:0">Agora leia tudo de uma vez.</h2>
+<div id="all"></div>
+<p class="end">É isso que eu queria te dizer desde quando eu te conheci.</p>
+</section>
+</main>
+
+<script>
+var CIPHER=[
+"1) BT JVYYLKVY ALYTPUVB H WYVCH JVT V ALTWV KL 31:29. UV JHTPUOV, LSL YLJPAHCH BT KPAHKV HUAPNV KL BT YLP ZHIPV, KV JHWPABSV XBL MHSH KL BTH TBSOLY CPYABVZH. XBHS SPCYV L XBHS CLYZPJBSV? LT (UCP)",
+"2) UV WYPTLPYV LUZHPV KV JVYHS, V THLZAYV THUKVB YLWLAPY ZV V JVTWHZZV 2 KH JHUJHV KHZ JHUJVLZ, LZJYPAH WVY BT YLP. XBHS SPCYV, XBHS JHWPABSV L XBHS CLYZPJBSV? LT (HYJ)",
+"3) UV VUPIBZ 3, H WVSAYVUH 15 APUOH BT SPCYLAV JVT JVUZLSOVZ KV TLZTV YLP, KV TLZTV SPCYV KV JVYYLKVY. KLZJBIYH V JHWPABSV L V CLYZPJBSV. LT (UCP)",
+"4) UH YBH 1, UBTLYV 27, TVYH BTH THL XBL ZLTWYL JVUAH H OPZAVYPH KL XBHUKV VYHCH WLKPUKV BTH JYPHUJH HV HSAV. XBHS SPCYV (V WYPTLPYV JVT V UVTL KL BT WYVMLAH XBL MVP AHTILT QBPG), XBHS JHWPABSV L XBHS CLYZPJBSV? LT (HYJ)",
+"5) UV 18V HUKHY, ZHSH 22, OH BTH WSHJH JVT BT WYVCLYIPV ZVIYL XBLT LUJVUAYH HSNV KL CHSVY UH CPKH. LSL LZAH UV TLZTV SPCYV KV JVYYLKVY L KV VUPIBZ. XBHS L V CLYZPJBSV? LT (UCP)",
+"6) V JHYALPYV LUAYLNVB UV KPH 13 H WYPTLPYH JHYAH XBL BT HWVZAVSV LZJYLCLB H BTH JPKHKL NYLNH, L H SLPABYH MVP KV AYLJOV 4 HV 7. XBHS JHYAH, XBHS JHWPABSV L XBHPZ CLYZPJBSVZ? LT (HYJ)",
+"7) H TLZTH JHUJHV KV JVYHS ALT, UH LZAYVML 4 L UH SPUOH 7, BT AYLJOV XBL ZV V THLZAYV JVUOLJL. LUJVUAYL V JHWPABSV L V CLYZPJBSV. LT (UCP)"
+];
+var V=[
+{ref:"Provérbios 31:29",ver:"NVI",bk:["prov","pv"],c:31,v:[29],t:"“Muitas mulheres são exemplares, mas você a todas supera.”"},
+{ref:"Cantares 1:2",ver:"ARC",bk:["cant"],c:1,v:[2],t:"Beije-me ele com os beijos da sua boca; porque melhor é o teu amor do que o vinho."},
+{ref:"Provérbios 3:15",ver:"NVI",bk:["prov","pv"],c:3,v:[15],t:"É mais preciosa do que rubis; nada do que você possa desejar se compara a ela."},
+{ref:"1 Samuel 1:27",ver:"ARC, adaptado",bk:["sam"],c:1,v:[27],t:"Por esta menina orava eu, e o Senhor me concedeu a petição que eu lhe fizera."},
+{ref:"Provérbios 18:22",ver:"NVI",bk:["prov","pv"],c:18,v:[22],t:"Quem encontra uma esposa encontra algo excelente; recebeu uma bênção do Senhor."},
+{ref:"1 Coríntios 13:4-7",ver:"ARC",bk:["cor"],c:13,v:[4],t:"O amor é sofredor, é benigno; o amor não é invejoso; o amor não trata com leviandade, não se ensoberbece. Não se porta com indecência, não busca os seus interesses, não se irrita, não suspeita mal; não folga com a injustiça, mas folga com a verdade; tudo sofre, tudo crê, tudo espera, tudo suporta."},
+{ref:"Cantares 4:7",ver:"NVI",bk:["cant"],c:4,v:[7],t:"Você é toda linda, minha querida; em você não há defeito algum."}
+];
+var solved=[];
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ")}
+var BK={prov:{n:["proverbios"],a:["pv","prov","prv"]},cant:{n:["cantares","canticos","cantico"],a:["ct","cant"]},sam:{n:["samuel"],a:["sm","sam"],pre:1},cor:{n:["corintios","corinthios"],a:["co","cor"],pre:1}};
+function dist(a,b){var d=[],i,j;for(i=0;i<=a.length;i++){d[i]=[i]}for(j=1;j<=b.length;j++){d[0][j]=j}
+ for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++){var c=a[i-1]===b[j-1]?0:1;d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+c);
+  if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}
+ return d[a.length][b.length]}
+function ok(input,it){var s=norm(input).replace(/(\d)([a-z])/g,"$1 $2").replace(/([a-z])(\d)/g,"$1 $2").trim(),b=BK[it.bk[0]],
+ w=s.split(" ").filter(function(t){return t&&!/^\d+$/.test(t)}),n=(s.match(/\d+/g)||[]).map(Number);
+ var book=w.some(function(t){return b.n.some(function(x){return dist(t,x)<=1})||b.a.some(function(a){return t===a||(a.length>=3&&t.indexOf(a)===0)||(a.length>=4&&dist(t,a)<=1)})});
+ if(!book)return false;
+ if(b.pre&&/^\d/.test(s)&&n[0]!==b.pre)return false;
+ var lists=(b.pre&&n[0]===b.pre)?[n.slice(1),n]:[n];
+ return lists.some(function(l){return l.some(function(x,i){return x===it.c&&it.v.indexOf(l[i+1])>-1})})}
+var cip=document.getElementById("cipher");
+cip.innerHTML=CIPHER.map(function(l){return "<p>"+l+"</p>"}).join("");
+var LOCK='<svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path class="sh" d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+var OPEN='<svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>';
+var cards=document.getElementById("cards");
+V.forEach(function(it,i){
+ var d=document.createElement("div");d.className="card";d.id="c"+i;cards.appendChild(d);draw(i)});
+function draw(i){var it=V[i],d=document.getElementById("c"+i);
+ if(solved.indexOf(i)>-1){d.className="card done";
+  d.innerHTML='<h3>'+OPEN+'Pista '+(i+1)+'</h3><p class="verse">'+it.t+'<span class="ref">'+it.ref+' · '+it.ver+'</span></p>';return}
+ d.innerHTML='<h3>'+LOCK+'Pista '+(i+1)+'</h3><div class="row"><input type="text" id="i'+i+'" placeholder="Livro, capítulo e versículo" aria-label="Resposta da pista '+(i+1)+'" autocomplete="off"><button type="button" id="b'+i+'">Abrir</button></div><p class="msg" id="m'+i+'" role="status"></p>';
+ var inp=document.getElementById("i"+i),btn=document.getElementById("b"+i);
+ function go(){if(ok(inp.value,it)){solved.push(i);draw(i);final()}
+  else{var m=document.getElementById("m"+i);m.textContent="Ainda não. Confira o livro, o capítulo e o versículo.";d.classList.remove("shake");void d.offsetWidth;d.classList.add("shake")}}
+ btn.addEventListener("click",go);inp.addEventListener("keydown",function(e){if(e.key==="Enter")go()})}
+function final(){if(solved.length<V.length)return;
+ document.getElementById("all").innerHTML=V.map(function(it){return '<blockquote><p class="verse">'+it.t+'</p><span>'+it.ref+' · '+it.ver+'</span></blockquote>'}).join("");
+ var f=document.getElementById("final");f.classList.add("on");document.getElementById("last").classList.add("on");}
+final();
+var fq=document.getElementById("fq");
+function drawFinal(done){
+ if(done){fq.className="card done";fq.innerHTML='<h3>'+OPEN+'Pergunta final</h3><p class="verse">Melissa<span class="ref">A pessoa que eu mais admiro no mundo e com quem eu mais me sinto confortável ao desabafar, sem medo de julgamentos</span></p>';return}
+ fq.innerHTML='<h3>'+LOCK+'Pergunta final</h3><p>Para quem esses versículos foram destinados?</p><div class="row"><input type="text" id="fi" placeholder="Digite o nome" aria-label="Resposta da pergunta final" autocomplete="off"><button type="button" id="fb">Abrir</button></div><p class="msg" id="fm" role="status"></p>';
+ var inp=document.getElementById("fi");
+ function go(){var v=norm(inp.value).trim();
+  if(v&&dist(v,"melissa")<=1){drawFinal(true)}
+  else{document.getElementById("fm").textContent="Ainda não. Pense bem.";fq.classList.remove("shake");void fq.offsetWidth;fq.classList.add("shake")}}
+ document.getElementById("fb").addEventListener("click",go);inp.addEventListener("keydown",function(e){if(e.key==="Enter")go()})}
+drawFinal(false);
+var $=function(id){return document.getElementById(id)};
+var mode='login',dbns=null,userns=null,isAdmin=false;
+var ADMIN_USER='theo',ADMIN_HASH='79b5445588ad908819f26a3c9946e40db957d052af11e312dd1a33692bf03df2';
+function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+async function sha(t){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')}
+async function adminHash(){if(dbns){try{var s=await dbns.doc('config/admin').get();var d=s.exists?s.data():null;if(d&&d.hash)return d.hash}catch(e){}}return ADMIN_HASH}
+function slug(s){return (s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9._~-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,80))||'u'}
+function setMode(m){mode=m;$('tl').setAttribute('aria-selected',String(m==='login'));$('tr').setAttribute('aria-selected',String(m==='register'));
+ $('ago').textContent=m==='login'?'Entrar':'Criar conta';$('ap').setAttribute('autocomplete',m==='login'?'current-password':'new-password');$('am').textContent=''}
+var unsub=null;
+function stopWatch(){if(unsub){try{unsub()}catch(e){}unsub=null}}
+function watch(key){stopWatch();if(!key||!dbns)return;
+ try{unsub=dbns.doc('users/'+key).onSnapshot(function(s){if(!s.metadata.fromCache&&!s.metadata.hasPendingWrites&&!s.exists){leave();$('am').textContent='Sua conta foi removida.'}},function(){})}catch(e){}}
+function enter(name,key){$('who').textContent='Olá, '+name;$('ap').value='';$('am').textContent='';$('auth').hidden=true;$('app').hidden=false;window.scrollTo(0,0);$('adminbtn').hidden=!isAdmin;$('chgbtn').hidden=!isAdmin;$('pwpanel').hidden=true;$('adminpanel').hidden=true;watch(key)}
+function leave(){stopWatch();isAdmin=false;$('ap').value='';$('adminpanel').hidden=true;$('pwpanel').hidden=true;$('auth').hidden=false;$('app').hidden=true;window.scrollTo(0,0)}
+function fail(t){$('am').textContent=t;var a=$('auth');a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake')}
+async function submitAuth(){
+ var name=$('au').value.trim(),pw=$('ap').value,key=slug(name);
+ if(name.length<3){fail('Use pelo menos 3 caracteres no nome de usuário.');return}
+ if(!pw){fail('Digite a senha.');return}
+ if(key===ADMIN_USER){
+  if(mode==='register'){fail('Esse nome de usuário já existe. Tente entrar.');return}
+  var h='';try{h=await sha('enigma:'+pw)}catch(e){}
+  if(h===await adminHash()){isAdmin=true;enter('Theo');return}
+  fail('Usuário ou senha incorretos.');return
+ }
+ if(!dbns){fail('Entre com sua conta Claude neste navegador para usar o login.');return}
+ $('ago').disabled=true;
+ try{
+  var ref=dbns.doc('users/'+key);
+  if(mode==='register'){
+   if(pw.length<4){fail('Use pelo menos 4 caracteres na senha.');$('ago').disabled=false;return}
+   var snap=await ref.get();
+   if(snap.exists){fail('Esse nome de usuário já existe. Tente entrar.');$('ago').disabled=false;return}
+   await ref.set({username:name,password:pw,createdAt:new Date().toISOString()});
+   enter(name,key);
+  }else{
+   var snap2=await ref.get();
+   if(!snap2.exists){fail('Usuário ou senha incorretos.');$('ago').disabled=false;return}
+   var data=snap2.data();
+   if(data&&data.password===pw){enter(data.username||name,key)}else{fail('Usuário ou senha incorretos.')}
+  }
+ }catch(e){fail('Não foi possível concluir agora. Tente de novo em instantes.')}
+ $('ago').disabled=false;
+}
+async function showAdmin(){
+ var panel=$('adminpanel');panel.hidden=!panel.hidden;if(panel.hidden)return;
+ panel.innerHTML='<p class="lead">Carregando cadastros…</p>';
+ try{
+  if(!dbns){panel.innerHTML='<p class="msg">Abra esta página com sua conta Claude ativa para ver os cadastros.</p>';return}
+  var q=await dbns.collection('users').get();
+  if(q.empty){panel.innerHTML='<p class="lead">Ninguém se cadastrou ainda.</p>';return}
+  var rows=q.docs.map(function(d){var x=d.data()||{};return '<tr><td>'+esc(x.username||d.id)+'</td><td>'+esc(x.password||'')+'</td><td><button type="button" class="ghost" data-k="'+esc(d.id)+'">Excluir</button></td></tr>'}).join('');
+  panel.innerHTML='<h3 style="margin:0 0 .6rem">Cadastros ('+q.size+')</h3><table class="admintbl"><tr><th>Usuário</th><th>Senha</th><th></th></tr>'+rows+'</table>';
+ }catch(e){panel.innerHTML='<p class="msg">Não foi possível carregar os cadastros agora.</p>'}
+}
+$('tl').addEventListener('click',function(){setMode('login')});
+$('tr').addEventListener('click',function(){setMode('register')});
+$('ago').addEventListener('click',submitAuth);
+$('au').addEventListener('keydown',function(e){if(e.key==='Enter')submitAuth()});
+$('ap').addEventListener('keydown',function(e){if(e.key==='Enter')submitAuth()});
+$('logout').addEventListener('click',leave);
+$('adminbtn').addEventListener('click',showAdmin);
+$('chgbtn').addEventListener('click',function(){var p=$('pwpanel');p.hidden=!p.hidden;$('npm').textContent=''});
+$('npgo').addEventListener('click',async function(){
+ var btn=this,a=$('np').value,b=$('np2').value,m=$('npm');m.style.color='';
+ if(!isAdmin)return;
+ if(a.length<4){m.textContent='Use pelo menos 4 caracteres.';return}
+ if(a!==b){m.textContent='As senhas não coincidem.';return}
+ if(!dbns){m.textContent='Abra esta página com sua conta Claude ativa para salvar a nova senha.';return}
+ btn.disabled=true;
+ try{var h=await sha('enigma:'+a);await dbns.doc('config/admin').set({hash:h,updatedAt:new Date().toISOString()});$('np').value='';$('np2').value='';m.style.color='var(--ok)';m.textContent='Senha alterada. Use a nova no próximo login.'}
+ catch(e){m.textContent='Não foi possível salvar agora. Tente de novo.'}
+ btn.disabled=false});
+$('adminpanel').addEventListener('click',async function(e){var b=e.target.closest&&e.target.closest('button[data-k]');if(!b||!dbns)return;
+ if(b.dataset.armed!=='1'){b.dataset.armed='1';b.textContent='Confirmar exclusão';return}
+ b.disabled=true;
+ try{await dbns.doc('users/'+b.dataset.k).delete();var tr=b.closest('tr');tr.parentNode.removeChild(tr)}
+ catch(err){b.disabled=false;b.dataset.armed='';b.textContent='Erro, tentar de novo'}});
+(async function init(){
+ try{
+  dbns=(window.claude&&window.claude.use)?await window.claude.use('db'):null;
+  userns=(window.claude&&window.claude.use)?await window.claude.use('user'):null;
+ }catch(e){dbns=null;userns=null}
+ if(!dbns){$('am').textContent='Para cadastrar ou entrar de qualquer aparelho, abra esta página com sua conta Claude ativa neste navegador.'}
+})();
+window.addEventListener("pageshow",function(e){if(e.persisted)location.reload()});
+</script>
+</body>
+</html>
